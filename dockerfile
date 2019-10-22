@@ -1,4 +1,6 @@
 # base image
+FROM nginx:1.17
+COPY build/ /usr/share/nginx/html
 FROM node:12.2.0-alpine
 LABEL Taurean="ayobamitomi@gmail.com"
 RUN npm install
