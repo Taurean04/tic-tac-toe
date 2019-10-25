@@ -1,13 +1,15 @@
-# base image
-FROM nginx:1.17
-COPY build/ /usr/share/nginx/html
-FROM node:12.2.0-alpine
-LABEL Taurean="ayobamitomi@gmail.com"
+FROM mhart/alpine-node:11 AS builder
+WORKDIR /tic-tac-toe
+COPY package*.json /tic-tac-toe/
+COPY . .
 RUN npm install
 RUN npm install react-scripts@3.0.1 -g
-# set working directory
+RUN npm run build
+
+
+FROM nginx:1.15
 WORKDIR /tic-tac-toe
-COPY package*.json ./
-COPY . .
-# start app
+COPY --from=build-stage /app/build/ /usr/share/nginx/html
+COPY --from=build-stage /nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/build .
 CMD ["npm", "start", "serve", "-p", "80", "-s", "."]
