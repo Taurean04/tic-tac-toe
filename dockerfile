@@ -9,7 +9,7 @@ RUN npm run build
 
 FROM nginx:1.15
 WORKDIR /tic-tac-toe
-COPY --from=build-stage /app/build/ /usr/share/nginx/html
-COPY --from=build-stage /nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build/ /usr/share/nginx/html
+COPY --from=build /nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/build .
 CMD ["npm", "start", "serve", "-p", "80", "-s", "."]
